@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình phát YouTube tùy chỉnh</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 680px;
+        }
+        h1 {
+            color: #1c1e21;
+        }
+        .input-group {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+        #youtubeUrl {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #c4302b; /* YouTube Red */
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #a32722;
+        }
+        /* Vùng chứa video, đảm bảo tỷ lệ 16:9 */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* Tỷ lệ 16:9 (9 / 16 * 100) */
+            margin-top: 20px;
+            background-color: #000;
+        }
+        #player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Trình phát YouTube tùy chỉnh</h1>
+        <p>Dán một URL video YouTube vào ô bên dưới và nhấn Play.</p>
+        <div class="input-group">
+            <input type="url" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..." required>
+            <button onclick="startVideo()">Play Video</button>
+        </div>
+        <div class="video-container">
+            <div id="player"></div>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        // 2. Biến toàn cục để giữ đối tượng trình phát
+        let player;
+
+        // Hàm này sẽ được gọi khi người dùng nhấn nút "Play Video"
+        function startVideo() {
+            const url = document.getElementById('youtubeUrl').value;
+            if (!url) {
+                alert("Vui lòng nhập URL của video YouTube!");
+                return;
+            }
+
+            const videoId = extractVideoID(url);
+            if (!videoId) {
+                alert("URL không hợp lệ hoặc không tìm thấy ID video. Vui lòng kiểm tra lại URL.");
+                return;
+            }
+
+            // Nếu trình phát chưa được tạo, hãy tạo nó.
+            if (!player) {
+                player = new YT.Player('player', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: videoId,
+                    // Các tham số của trình phát
+                    playerVars: {
+                        'autoplay': 1,      // Tự động phát khi tải xong
+                        'controls': 0,      // Ẩn thanh điều khiển mặc định
+                        'rel': 0,           // Chỉ hiển thị video đề xuất từ cùng một kênh
+                        'showinfo': 0,      // (Không còn được hỗ trợ) - Ẩn tiêu đề video
+                        'modestbranding': 1,// Ẩn logo YouTube trên thanh điều khiển
+                        'iv_load_policy': 3 // Ẩn các chú thích trong video
+                    },
+                    events: {
+                        'onReady': onPlayerReady
+                    }
+                });
+            } else {
+                // Nếu trình phát đã tồn tại, chỉ cần tải video mới và phát nó
+                player.loadVideoById(videoId);
+            }
+        }
+        
+        // 3. API sẽ gọi hàm này khi trình phát đã sẵn sàng
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
+
+        // Hàm trợ giúp để trích xuất ID video từ các định dạng URL khác nhau
+        function extractVideoID(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[2].length === 11) {
+                return match[2];
+            } else {
+                return null;
+            }
+        }
+    </script>
+
+</body>
+</html>
