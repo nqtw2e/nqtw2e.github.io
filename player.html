@@ -109,12 +109,13 @@
                     videoId: videoId,
                     // Các tham số của trình phát
                     playerVars: {
-                        'autoplay': 1,      // Tự động phát khi tải xong
+                        'autoplay': 0,      // Tự động phát khi tải xong
                         'controls': 0,      // Ẩn thanh điều khiển mặc định
                         'rel': 0,           // Chỉ hiển thị video đề xuất từ cùng một kênh
                         'showinfo': 0,      // (Không còn được hỗ trợ) - Ẩn tiêu đề video
                         'modestbranding': 1,// Ẩn logo YouTube trên thanh điều khiển
-                        'iv_load_policy': 3 // Ẩn các chú thích trong video
+                        'iv_load_policy': 3,// Ẩn các chú thích trong video
+                        'playsinline': 1,
                     },
                     events: {
                         'onReady': onPlayerReady
