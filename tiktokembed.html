@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embed TikTok Video</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .method {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        
+        .method h2 {
+            color: #ff0050;
+            margin-top: 0;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input[type="url"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        button {
+            background-color: #ff0050;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: #e6004a;
+        }
+        
+        .embed-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            min-height: 100px;
+        }
+        
+        .tiktok-embed {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .note {
+            background-color: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .error {
+            background-color: #ffebee;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Embed Video TikTok</h1>
+        
+        <!-- Phương pháp 1: Sử dụng TikTok Embed Script -->
+        <div class="method">
+            <h2>Phương pháp 1: TikTok Embed Script (Khuyến nghị)</h2>
+            <div class="note">
+                <strong>Lưu ý:</strong> Nhập URL TikTok đầy đủ, ví dụ: https://www.tiktok.com/@username/video/1234567890123456789
+            </div>
+            
+            <div class="input-group">
+                <label for="tiktokUrl1">URL Video TikTok:</label>
+                <input type="url" id="tiktokUrl1" placeholder="https://www.tiktok.com/@username/video/1234567890123456789">
+            </div>
+            
+            <button onclick="embedTikTok1()">Embed Video</button>
+            <button onclick="clearEmbed1()">Xóa</button>
+            
+            <div id="embedContainer1" class="embed-container"></div>
+        </div>
+        
+        <!-- Phương pháp 2: Sử dụng oEmbed API -->
+        <div class="method">
+            <h2>Phương pháp 2: oEmbed API</h2>
+            <div class="note">
+                <strong>Lưu ý:</strong> Phương pháp này có thể bị giới hạn bởi CORS policy trên một số domain.
+            </div>
+            
+            <div class="input-group">
+                <label for="tiktokUrl2">URL Video TikTok:</label>
+                <input type="url" id="tiktokUrl2" placeholder="https://www.tiktok.com/@username/video/1234567890123456789">
+            </div>
+            
+            <button onclick="embedTikTok2()">Embed Video</button>
+            <button onclick="clearEmbed2()">Xóa</button>
+            
+            <div id="embedContainer2" class="embed-container"></div>
+        </div>
+        
+        <!-- Phương pháp 3: Manual Embed Code -->
+        <div class="method">
+            <h2>Phương pháp 3: Tạo Embed Code Thủ Công</h2>
+            <div class="note">
+                <strong>Hướng dẫn:</strong>
+                <ol>
+                    <li>Truy cập video TikTok trên trình duyệt</li>
+                    <li>Nhấp vào nút "Share" (Chia sẻ)</li>
+                    <li>Chọn "Embed" và copy code</li>
+                    <li>Dán code vào ô bên dưới</li>
+                </ol>
+            </div>
+            
+            <div class="input-group">
+                <label for="embedCode">Embed Code từ TikTok:</label>
+                <textarea id="embedCode" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;" placeholder='<blockquote class="tiktok-embed" cite="..." data-video-id="...">...</blockquote>'></textarea>
+            </div>
+            
+            <button onclick="embedTikTok3()">Hiển thị Video</button>
+            <button onclick="clearEmbed3()">Xóa</button>
+            
+            <div id="embedContainer3" class="embed-container"></div>
+        </div>
+    </div>
+
+    <!-- TikTok Embed Script -->
+    <script async src="https://www.tiktok.com/embed.js"></script>
+    
+    <script>
+        // Phương pháp 1: Sử dụng TikTok Embed Script
+        function embedTikTok1() {
+            const url = document.getElementById('tiktokUrl1').value.trim();
+            const container = document.getElementById('embedContainer1');
+            
+            if (!url) {
+                container.innerHTML = '<div class="error">Vui lòng nhập URL TikTok!</div>';
+                return;
+            }
+            
+            if (!isValidTikTokUrl(url)) {
+                container.innerHTML = '<div class="error">URL TikTok không hợp lệ!</div>';
+                return;
+            }
+            
+            // Tạo blockquote embed
+            const videoId = extractVideoId(url);
+            const username = extractUsername(url);
+            
+            if (!videoId || !username) {
+                container.innerHTML = '<div class="error">Không thể trích xuất thông tin từ URL!</div>';
+                return;
+            }
+            
+            const embedCode = `
+                <blockquote class="tiktok-embed" 
+                           cite="${url}" 
+                           data-video-id="${videoId}" 
+                           style="max-width: 605px;min-width: 325px;">
+                    <section>
+                        <a target="_blank" title="@${username}" href="https://www.tiktok.com/@${username}">@${username}</a>
+                    </section>
+                </blockquote>
+            `;
+            
+            container.innerHTML = embedCode;
+            
+            // Reload TikTok embed script
+            if (window.tiktokEmbed) {
+                window.tiktokEmbed.load();
+            }
+        }
+        
+        // Phương pháp 2: Sử dụng oEmbed API
+        async function embedTikTok2() {
+            const url = document.getElementById('tiktokUrl2').value.trim();
+            const container = document.getElementById('embedContainer2');
+            
+            if (!url) {
+                container.innerHTML = '<div class="error">Vui lòng nhập URL TikTok!</div>';
+                return;
+            }
+            
+            if (!isValidTikTokUrl(url)) {
+                container.innerHTML = '<div class="error">URL TikTok không hợp lệ!</div>';
+                return;
+            }
+            
+            try {
+                container.innerHTML = '<div style="text-align: center; padding: 20px;">Đang tải...</div>';
+                
+                // Sử dụng CORS proxy để tránh lỗi CORS
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const apiUrl = `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`;
+                
+                const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
+                const data = await response.json();
+                
+                if (data.html) {
+                    container.innerHTML = data.html;
+                    
+                    // Reload TikTok embed script
+                    if (window.tiktokEmbed) {
+                        window.tiktokEmbed.load();
+                    }
+                } else {
+                    throw new Error('Không nhận được dữ liệu embed');
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="error">Lỗi: ' + error.message + '<br>Hãy thử phương pháp khác!</div>';
+            }
+        }
+        
+        // Phương pháp 3: Manual Embed Code
+        function embedTikTok3() {
+            const embedCode = document.getElementById('embedCode').value.trim();
+            const container = document.getElementById('embedContainer3');
+            
+            if (!embedCode) {
+                container.innerHTML = '<div class="error">Vui lòng nhập embed code!</div>';
+                return;
+            }
+            
+            container.innerHTML = embedCode;
+            
+            // Reload TikTok embed script
+            if (window.tiktokEmbed) {
+                window.tiktokEmbed.load();
+            }
+        }
+        
+        // Hàm hỗ trợ
+        function isValidTikTokUrl(url) {
+            const tiktokRegex = /^https?:\/\/(www\.)?tiktok\.com\/@[\w.-]+\/video\/\d+/;
+            return tiktokRegex.test(url);
+        }
+        
+        function extractVideoId(url) {
+            const match = url.match(/\/video\/(\d+)/);
+            return match ? match[1] : null;
+        }
+        
+        function extractUsername(url) {
+            const match = url.match(/@([\w.-]+)\/video/);
+            return match ? match[1] : null;
+        }
+        
+        function clearEmbed1() {
+            document.getElementById('embedContainer1').innerHTML = '';
+            document.getElementById('tiktokUrl1').value = '';
+        }
+        
+        function clearEmbed2() {
+            document.getElementById('embedContainer2').innerHTML = '';
+            document.getElementById('tiktokUrl2').value = '';
+        }
+        
+        function clearEmbed3() {
+            document.getElementById('embedContainer3').innerHTML = '';
+            document.getElementById('embedCode').value = '';
+        }
+        
+        // Auto-resize embedded videos
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'tiktok_embed_resize') {
+                const iframe = document.querySelector('iframe[src*="tiktok"]');
+                if (iframe) {
+                    iframe.style.height = event.data.height + 'px';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
