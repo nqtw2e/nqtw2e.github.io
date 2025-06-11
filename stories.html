@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vietnamese Stories - Hybrid Design</title>
+  <style>
+    :root {
+      /* Colors from styles.css */
+      --color-primary: #a8d5a8;
+      --color-primary-dark: #9bc89b;
+      --color-text: #332421;
+      --color-text-light: #3c2e26;
+      --color-text-muted: #332421a1;
+      --color-background: #ededed;
+      --color-border-light: #00000010;
+      --color-border-dark: #00000050;
+      --color-white: #fff;
+      --color-shadow: rgba(0, 0, 0, 0.5);
+      --color-shadow-light: rgba(0, 0, 0, 0.15);
+      --color-shadow-green: rgba(168, 213, 168, 0.4);
+      --color-shadow-green-hover: rgba(168, 213, 168, 0.6);
+      --color-disabled: #ccc;
+
+      /* Spacing */
+      --spacing-xs: 10px;
+      --spacing-sm: 15px;
+      --spacing-md: 20px;
+      --spacing-lg: 30px;
+      --spacing-xl: 40px;
+
+      /* Border Radius */
+      --radius-sm: 10px;
+      --radius-md: 20px;
+      --radius-lg: 50px;
+
+      /* Shadows */
+      --shadow-sm: 0 2px 4px rgba(51, 36, 33, 0.05);
+      --shadow-md: 0 5px 15px var(--color-shadow-green);
+      --shadow-lg: 0 8px 25px var(--color-shadow-light);
+      --shadow-xl: 0 10px 25px var(--color-shadow);
+    }
+
+    body {
+      background-color: var(--color-white);
+      color: var(--color-text);
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0 0 80px 0;
+      /* Padding for bottom nav bar */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* --- Slider --- */
+    .header {
+      width: 100%;
+      height: 50vh;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    .slider-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .slider {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      /* Center content horizontally */
+    }
+
+    .slide-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.8);
+      z-index: 1;
+    }
+
+    .slide-content {
+      position: relative;
+      z-index: 2;
+      padding: 30px 0px 50px;
+      width: 100%;
+      color: var(--color-white);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      text-align: center;
+      /* Center text */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      /* Dark bottom gradient */
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.71) 0%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    .slide-content-inner {
+      padding: 0 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .slide-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin: 0 0 10px 0;
+    }
+
+    .slide-description {
+      font-size: 1rem;
+      margin: 0 0 20px 0;
+      max-width: 80%;
+    }
+
+    .slide-button {
+      background-color: var(--color-primary);
+      color: var(--color-text);
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      /* Use flexbox for icon alignment */
+      align-items: center;
+      gap: 8px;
+      /* Space between icon and text */
+      box-shadow: var(--shadow-md);
+    }
+
+    .slide-button:hover {
+      background-color: var(--color-primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .slide-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .slider-nav {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      right: 10px;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      z-index: 3;
+    }
+
+    .slider-nav button {
+      background: rgba(255, 255, 255, 0.8);
+      border: none;
+      color: var(--color-text);
+      font-size: 2rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+    }
+
+    .slider-dots {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 3;
+    }
+
+    .slider-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .slider-dot.active {
+      background: var(--color-primary);
+    }
+
+    .header-separator {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: var(--spacing-md);
+      background-color: var(--color-white);
+      z-index: 10;
+      border-top-left-radius: var(--radius-md);
+      border-top-right-radius: var(--radius-md);
+    }
+
+    /* --- Story Rows & Cards --- */
+    .story-row {
+      margin-bottom: 40px;
+    }
+
+    .category-title {
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      padding: 0 15px;
+      color: var(--color-text);
+    }
+
+    .horizontal-scroll-grid {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 160px;
+      gap: 15px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 15px 15px 15px;
+      scrollbar-width: none;
+    }
+
+    .horizontal-scroll-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .story-card {
+      background-color: var(--color-background);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      width: 160px;
+      height: 225px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-md);
+    }
+
+    .story-card:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .story-card .story-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      filter: brightness(0.9);
+    }
+
+    .story-card .story-info {
+      position: relative;
+      z-index: 3;
+      padding: 10px;
+      width: 100%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    }
+
+    .story-card .story-title {
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--color-white);
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .story-level-pill {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: var(--color-primary);
+      color: var(--color-text);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: bold;
+      z-index: 4;
+    }
+
+    .character-name {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(1.2rem, 5vw, 2rem);
+      font-weight: 800;
+      color: var(--color-white);
+      text-transform: uppercase;
+      z-index: 2;
+      text-align: center;
+      width: 100%;
+      pointer-events: none;
+      letter-spacing: 2px;
+      padding: 0 5px;
+      box-sizing: border-box;
+      line-height: 1.1;
+      word-wrap: break-word;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Progress Bar Styles */
+    .story-info .progress-bar {
+      margin-top: 8px;
+      height: 4px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .story-info .progress {
+      height: 100%;
+      background-color: var(--color-primary);
+      border-radius: 4px;
+    }
+
+    /* Lock Styles */
+    .story-card.locked {
+      cursor: pointer;
+    }
+
+    .story-card.locked .story-image {
+      filter: grayscale(100%) brightness(0.6);
+    }
+
+    .lock-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 4;
+      width: 20px;
+      height: 20px;
+      color: var(--color-white);
+    }
+
+    #all-stories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      padding: 0 15px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+      background-color: var(--color-background);
+      padding: 15px;
+      border-radius: var(--radius-md);
+      margin: 0 15px 20px 15px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filters input,
+    .filters select {
+      background-color: var(--color-white);
+      color: var(--color-text);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      flex-grow: 1;
+    }
+
+    .load-more-container {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .load-more-btn {
+      background-color: var(--color-primary);
+      color: var(--color-text);
+      border: none;
+      padding: 10px 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-md);
+    }
+
+    .load-more-btn:hover {
+      background-color: var(--color-primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .load-more-btn.hidden {
+      display: none;
+    }
+
+
+    /* --- Panel --- */
+    .panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--color-white);
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 20px;
+      border-top-left-radius: var(--radius-md);
+      border-top-right-radius: var(--radius-md);
+      z-index: 1000;
+      max-height: 90vh;
+      overflow-y: auto;
+      visibility: hidden;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .panel.active {
+      transform: translateY(0);
+      visibility: visible;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 15px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--color-text);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .panel-content {
+      text-align: center;
+    }
+
+    .panel-image {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .panel-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin: 0 0 10px 0;
+      color: var(--color-text);
+    }
+
+    .panel-description {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      color: var(--color-text-light);
+    }
+
+    .panel-meta {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+    }
+
+    .stars {
+      color: var(--color-primary);
+    }
+
+    .start-btn {
+      background-color: var(--color-primary);
+      color: var(--color-text);
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-md);
+    }
+
+    .start-btn:hover {
+      background-color: var(--color-primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .start-btn:disabled {
+      background-color: var(--color-disabled);
+      color: var(--color-text-muted);
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* --- Bottom Navigation --- */
+    .bottom-nav-container {
+      width: calc(100% - 40px);
+      height: 90px;
+      position: fixed;
+      bottom: 0;
+      padding: 30px 20px 10px;
+      z-index: 500;
+      background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.95) 80%, rgba(255, 255, 255, 0) 100%);
+    }
+
+    .bottom-nav {
+      height: 70px;
+      background-color: var(--color-primary-dark);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid var(--color-border-light);
+      box-shadow: var(--shadow-xl);
+      border-radius: var(--radius-lg);
+      border-top: 1px solid var(--color-white);
+      border-bottom: 1px solid var(--color-border-dark);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-item.active {
+      color: var(--color-text);
+    }
+
+    .nav-item:hover {
+      color: var(--color-text-light);
+    }
+
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div class="slider-container">
+      <div class="slider"></div>
+      <div class="slider-nav">
+        <button id="prev-slide">&lt;</button>
+        <button id="next-slide">&gt;</button>
+      </div>
+      <div class="slider-dots"></div>
+    </div>
+    <div class="header-separator"></div>
+  </div>
+
+  <div id="main-content">
+    <!-- Story sections will be populated by JavaScript -->
+  </div>
+
+  <div class="panel" id="story-panel">
+    <div class="panel-header"><button class="close-btn" id="close-panel">&times;</button></div>
+    <div class="panel-content">
+      <img class="panel-image" id="panel-image" src="" alt="Story Image">
+      <h2 class="panel-title" id="panel-title"></h2>
+      <div class="panel-meta">
+        <span id="panel-seasons"></span>
+        <span id="panel-episodes"></span>
+        <div class="stars" id="panel-stars"></div>
+      </div>
+      <p class="panel-description" id="panel-description"></p>
+      <button class="start-btn" id="panel-start-btn">Start</button>
+    </div>
+  </div>
+
+  <nav class="bottom-nav-container">
+    <div class="bottom-nav">
+      <a href="#" class="nav-item active">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"></path>
+        </svg>
+        <span>Stories</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path>
+        </svg>
+        <span>Map</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+        </svg>
+        <span>Profile</span>
+      </a>
+    </div>
+  </nav>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // --- User & Level Data ---
+      const currentUserLevel = 'B1';
+      const levelMap = {
+        'A1': 1,
+        'A2': 2,
+        'B1': 3,
+        'B2': 4,
+        'C1': 5,
+        'C2': 6
+      };
+
+      const storyData = [{
+          "id": 1,
+          "character": "Liam",
+          "title": "Hanoi Study Year",
+          "category": "Student Life",
+          "level": "A2",
+          "description": "Join Liam, a college student on his study abroad year in Hanoi. Help him navigate campus life, order street food like a local, and make new friends. Perfect for learning essential daily conversation.",
+          "episodes": 10,
+          "seasons": 1,
+          "stars": 4.5,
+          "progress": 25,
+          "imageUrl": "https://plus.unsplash.com/premium_photo-1661436612606-11b3af6451f2?q=80&w=1460&auto=format&fit=crop",
+          "featured": false,
+          "suggested": false,
+          "tags": ["student life", "hanoi", "daily"]
+        },
+        {
+          "id": 2,
+          "character": "Chloe",
+          "title": "New Life in Da Nang",
+          "category": "Family & Culture",
+          "level": "B1",
+          "description": "Chloe just moved to Da Nang to start a new life with her husband's family. Follow her story as she navigates the beautiful dynamics of a Vietnamese family, from market shopping with her mother-in-law to celebrating traditional holidays.",
+          "episodes": 8,
+          "seasons": 1,
+          "stars": 4.8,
+          "progress": 0,
+          "imageUrl": "https://images.unsplash.com/photo-1576510683662-0f5a01be2114?q=80&w=1632&auto=format&fit=crop",
+          "featured": true,
+          "suggested": false,
+          "tags": ["culture", "family", "da nang"]
+        },
+        {
+          "id": 3,
+          "character": "Mia",
+          "title": "The Gap Year Journey",
+          "category": "Travel & Adventure",
+          "level": "A2",
+          "description": "Mia is taking a gap year to explore all of Vietnam on a budget. From the mountains of Sapa to the beaches of Phu Quoc, each episode is a new adventure. This series is great for travel vocabulary and understanding regional differences.",
+          "episodes": 12,
+          "seasons": 1,
+          "stars": 4.7,
+          "progress": 75,
+          "imageUrl": "https://images.unsplash.com/photo-1569654851706-bb83eafe0711?q=80&w=1470&auto=format&fit=crop",
+          "featured": false,
+          "suggested": false,
+          "tags": ["travel", "adventure"]
+        },
+        {
+          "id": 4,
+          "character": "Tanaka",
+          "title": "The Saigon Deal",
+          "category": "Business",
+          "level": "B2",
+          "description": "Mr. Tanaka is in Ho Chi Minh City to close a big deal. Help him master formal greetings, business negotiation language, and the art of the business dinner. This series is crucial for professionals looking to succeed in Vietnam.",
+          "episodes": 6,
+          "seasons": 1,
+          "stars": 4.6,
+          "progress": 0,
+          "imageUrl": "https://images.unsplash.com/photo-1596574027151-2ce81d85af3e?q=80&w=1474&auto=format&fit=crop",
+          "featured": true,
+          "suggested": false,
+          "tags": ["business", "saigon", "formal"]
+        },
+        {
+          "id": 5,
+          "character": "David",
+          "title": "Return to Hue",
+          "category": "History & Identity",
+          "level": "C1",
+          "description": "David, a Vietnamese-American, returns to the ancient capital of Hue to connect with his family's past. Explore themes of identity and belonging while practicing more nuanced and emotional language.",
+          "episodes": 8,
+          "seasons": 1,
+          "stars": 4.9,
+          "progress": 0,
+          "imageUrl": "https://images.unsplash.com/photo-1705823637026-92c0ef6d6222?q=80&w=1474&auto=format&fit=crop",
+          "featured": false,
+          "suggested": true,
+          "tags": ["history", "drama", "hue"]
+        },
+        {
+          "id": 6,
+          "character": "Isabelle",
+          "title": "The Food Blog",
+          "category": "Cuisine",
+          "level": "A1",
+          "description": "Follow Isabelle, a passionate food blogger, as she eats her way from North to South. Learn the names of countless delicious dishes, how to order them, and how to describe tastes and textures like a true foodie.",
+          "episodes": 15,
+          "seasons": 1,
+          "stars": 4.4,
+          "progress": 0,
+          "imageUrl": "https://images.unsplash.com/photo-1583394737344-fad9703d5395?q=80&w=1374&auto=format&fit=crop",
+          "featured": true,
+          "suggested": true,
+          "tags": ["food", "lifestyle", "cafe"]
+        },
+        {
+          "id": 7,
+          "character": "Alex",
+          "title": "Mekong Delta Classroom",
+          "category": "Volunteering",
+          "level": "A2",
+          "description": "Alex is volunteering to teach English in a small village in the Mekong Delta. Learn classroom vocabulary, how to interact with children, and how to talk with local villagers about their lives on the river.",
+          "episodes": 10,
+          "seasons": 1,
+          "stars": 4.6,
+          "progress": 0,
+          "imageUrl": "https://images.unsplash.com/photo-1684664888066-5de18c97b3c5?q=80&w=1472&auto=format&fit=crop",
+          "featured": false,
+          "suggested": true,
+          "tags": ["volunteering", "mekong", "daily"]
+        },
+        {
+          "id": 8,
+          "character": "Sofia",
+          "title": "The Colors of Sapa",
+          "category": "Art & Photography",
+          "level": "B1",
+          "description": "Sofia, a photographer, is on assignment to capture the vibrant culture of the Hmong people in Sapa. Learn how to describe colors, landscapes, and how to respectfully ask people for their photograph.",
+          "episodes": 8,
+          "seasons": 1,
+          "stars": 4.7,
+          "progress": 0,
+          "imageUrl": "https://images.unsplash.com/photo-1603486037214-4fec4016a9bf?q=80&w=1527&auto=format&fit=crop",
+          "featured": true,
+          "suggested": false,
+          "tags": ["art", "sapa", "culture"]
+        },
+        {
+          "id": 9,
+          "character": "Ben",
+          "title": "A Taste of Hue",
+          "category": "Cuisine",
+          "level": "B2",
+          "description": "Ben, a professional chef, travels to Hue to master the art of imperial cuisine. This story focuses on advanced food vocabulary, cooking techniques, and the history behind famous dishes.",
+          "episodes": 6,
+          "seasons": 1,
+          "stars": 4.8,
+          "progress": 0,
+          "imageUrl": "https://images.unsplash.com/photo-1568622952260-8db63caafe9a?q=80&w=1470&auto=format&fit=crop",
+          "featured": false,
+          "suggested": true,
+          "tags": ["food", "hue", "history"]
+        },
+        {
+          "id": 10,
+          "character": "Kenji",
+          "title": "Hoi An's Ancient Houses",
+          "category": "Architecture",
+          "level": "B2",
+          "description": "Kenji, an architect, is studying the unique blend of Japanese and Vietnamese architecture in Hoi An's ancient town. Learn technical vocabulary related to design and discuss preservation efforts with local experts.",
+          "episodes": 7,
+          "seasons": 1,
+          "stars": 4.9,
+          "progress": 0,
+          "imageUrl": "https://images.unsplash.com/photo-1748271151446-0013c0bc7061?q=80&w=1470&auto=format&fit=crop",
+          "featured": true,
+          "suggested": false,
+          "tags": ["architecture", "hoi an", "history"]
+        },
+        {
+          id: 11,
+          character: "Maria",
+          title: "Cafe Hopping in Saigon",
+          category: "Modern Life",
+          level: "A2",
+          description: "Maria is a digital nomad who's just landed in Ho Chi Minh City. Follow her as she finds the best cafes to work from, learns how to order different drinks, and navigates co-working spaces.",
+          episodes: 9,
+          seasons: 1,
+          stars: 4.4,
+          progress: 0,
+          imageUrl: "https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1637&auto=format&fit=crop",
+          featured: false,
+          suggested: true,
+          tags: ["lifestyle", "saigon", "cafe"]
+        },
+        {
+          id: 12,
+          character: "Sam & Eva",
+          title: "Romance in Phu Quoc",
+          category: "Travel",
+          level: "A1",
+          description: "Newlyweds Sam and Eva are on their honeymoon in Phu Quoc. Help them book a resort, order romantic dinners on the beach, and plan their relaxing getaway. Perfect for beginners and travel essentials.",
+          episodes: 8,
+          seasons: 1,
+          stars: 4.5,
+          progress: 0,
+          imageUrl: "https://images.unsplash.com/photo-1601629869893-96898864f16b?q=80&w=1470&auto=format&fit=crop",
+          featured: true,
+          suggested: false,
+          tags: ["travel", "romance", "phu quoc"]
+        },
+        {
+          id: 13,
+          character: "Omar",
+          title: "The Da Lat Marathon",
+          category: "Sports & Fitness",
+          level: "B1",
+          description: "Omar is an avid runner training for the Da Lat Ultra Trail marathon. Learn vocabulary related to fitness, sports, and health as he interacts with other athletes and explores the highlands.",
+          episodes: 7,
+          seasons: 1,
+          stars: 4.3,
+          progress: 0,
+          imageUrl: "https://images.unsplash.com/photo-1610443781238-4394626938a4?q=80&w=1374&auto=format&fit=crop",
+          featured: false,
+          suggested: true,
+          tags: ["sports", "da lat", "health"]
+        },
+        {
+          id: 14,
+          character: "Linh",
+          title: "Nha Trang's Traditional Music",
+          category: "Music & Arts",
+          level: "C1",
+          description: "Linh, a music student, travels to Nha Trang to study with a master of the Đàn Tranh. This story is for advanced learners interested in deep cultural and artistic conversations.",
+          episodes: 6,
+          seasons: 1,
+          stars: 4.8,
+          progress: 0,
+          imageUrl: "https://images.unsplash.com/photo-1625906303126-42acbdb74411?q=80&w=1470&auto=format&fit=crop",
+          featured: true,
+          suggested: false,
+          tags: ["music", "culture", "nha trang"]
+        },
+        {
+          id: 15,
+          character: "Leo",
+          title: "The Da Nang Tech Scene",
+          category: "Business",
+          level: "B2",
+          description: "Leo is launching his new tech startup in the booming city of Da Nang. Learn modern business Vietnamese, from pitching to investors to hiring a local team.",
+          episodes: 8,
+          seasons: 1,
+          stars: 4.7,
+          progress: 0,
+          imageUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1632&auto=format&fit=crop",
+          featured: false,
+          suggested: true,
+          tags: ["business", "da nang", "tech"]
+        },
+        {
+          id: 16,
+          character: "Hannah",
+          title: "Diving in Con Dao",
+          category: "Science",
+          level: "C1",
+          description: "Hannah is a marine biologist studying the coral reefs around the Con Dao islands. This story features specialized vocabulary about nature, conservation, and scientific research.",
+          episodes: 7,
+          seasons: 1,
+          stars: 4.9,
+          progress: 0,
+          imageUrl: "https://images.unsplash.com/photo-1577011314995-599114776169?q=80&w=1470&auto=format&fit=crop",
+          featured: true,
+          suggested: false,
+          tags: ["science", "nature", "con dao"]
+        },
+        {
+          id: 17,
+          character: "Jacob",
+          title: "My Ba's Recipes",
+          category: "Family",
+          level: "A2",
+          description: "Jacob visits his grandmother (Bà) to learn her secret family recipes. A heartwarming story full of kitchen vocabulary, family terms, and simple, loving conversations.",
+          episodes: 9,
+          seasons: 1,
+          stars: 4.5,
+          progress: 0,
+          imageUrl: "https://images.unsplash.com/photo-1594112392371-553a05950853?q=80&w=1374&auto=format&fit=crop",
+          featured: false,
+          suggested: true,
+          tags: ["family", "food", "daily"]
+        },
+        {
+          id: 18,
+          character: "Ava",
+          title: "Saigon Fashion Week",
+          category: "Fashion",
+          level: "B1",
+          description: "Ava is a young designer showcasing her collection at Saigon Fashion Week. Learn how to talk about clothes, fabrics, and design while navigating the fast-paced world of fashion.",
+          episodes: 8,
+          seasons: 1,
+          stars: 4.6,
+          progress: 0,
+          imageUrl: "https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=1471&auto=format&fit=crop",
+          featured: true,
+          suggested: false,
+          tags: ["fashion", "saigon", "design"]
+        },
+        {
+          id: 19,
+          character: "Noah",
+          title: "The Tunnels of Cu Chi",
+          category: "History",
+          level: "B1",
+          description: "History buff Noah explores the historic Cu Chi tunnels. Join him as he talks with guides and veterans, learning to discuss historical events and their impact on modern Vietnam.",
+          episodes: 7,
+          seasons: 1,
+          stars: 4.4,
+          progress: 0,
+          imageUrl: "https://images.unsplash.com/photo-1604925768593-913b48757c94?q=80&w=1470&auto=format&fit=crop",
+          featured: false,
+          suggested: true,
+          tags: ["history", "cu chi", "war"]
+        },
+        {
+          id: 20,
+          character: "Emily",
+          title: "Mekong Writing Retreat",
+          category: "Lifestyle",
+          level: "C1",
+          description: "Emily, a novelist, escapes to a quiet homestay in the Mekong Delta for a writing retreat. This story is filled with descriptive, literary language, perfect for learners who want to express themselves beautifully.",
+          episodes: 6,
+          seasons: 1,
+          stars: 4.8,
+          progress: 0,
+          imageUrl: "https://images.unsplash.com/photo-1628859017772-2d1e34f8e5d3?q=80&w=1374&auto=format&fit=crop",
+          featured: true,
+          suggested: false,
+          tags: ["lifestyle", "mekong", "writing"]
+        },
+      ];
+
+      // --- DOM Elements & State ---
+      const mainContent = document.getElementById('main-content');
+      const panel = document.getElementById('story-panel');
+      const closePanelBtn = document.getElementById('close-panel');
+      const slider = document.querySelector('.slider');
+      const sliderDotsContainer = document.querySelector('.slider-dots');
+      const prevSlideBtn = document.getElementById('prev-slide');
+      const nextSlideBtn = document.getElementById('next-slide');
+
+      let sliderInterval;
+      let currentSlideIndex = 0;
+      let allStoriesCurrentPage = 1;
+      const storiesPerPage = 8;
+      let currentFilteredStories = [];
+
+      // --- Helper Functions ---
+      const getStoryById = (id) => storyData.find(s => s.id === id);
+      const isStoryLocked = (storyLevel) => levelMap[storyLevel] > levelMap[currentUserLevel];
+
+      // --- UI Rendering ---
+      function openPanel(story) {
+        if (!story) return;
+        panel.querySelector('#panel-image').src = story.imageUrl;
+        panel.querySelector('#panel-title').textContent = `${story.character}'s Story: ${story.title}`;
+        panel.querySelector('#panel-description').textContent = story.description;
+        panel.querySelector('#panel-seasons').textContent = `${story.seasons} Season${story.seasons > 1 ? 's' : ''}`;
+        panel.querySelector('#panel-episodes').textContent = `${story.episodes} Episodes`;
+        panel.querySelector('#panel-stars').innerHTML = `&#9733; ${story.stars}`;
+
+        const startBtn = panel.querySelector('#panel-start-btn');
+        const locked = isStoryLocked(story.level);
+
+        if (locked) {
+          startBtn.textContent = 'Insufficient Level';
+          startBtn.disabled = true;
+        } else {
+          startBtn.disabled = false;
+          startBtn.textContent = story.progress > 0 ? 'Continue' : 'Start';
+        }
+
+        panel.classList.add('active');
+      }
+
+      function createStoryCard(story, withProgress = false) {
+        const locked = isStoryLocked(story.level);
+        const progressBarHTML = withProgress ? `
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${story.progress}%;"></div>
+                    </div>` : '';
+        const lockIconHTML = locked ? `
+                    <div class="lock-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"></path></svg>
+                    </div>` : '';
+
+        return `
+                    <div class="story-card ${locked ? 'locked' : ''}" data-id="${story.id}">
+                        ${lockIconHTML}
+                        <div class="story-level-pill">${story.level}</div>
+                        <img class="story-image" src="${story.imageUrl}" alt="${story.title}" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/160x225/1C1D2A/e5e5e5?text=Not+Found';">
+                        <div class="character-name">${story.character}</div>
+                        <div class="story-info">
+                            <h4 class="story-title">${story.title}</h4>
+                            ${progressBarHTML}
+                        </div>
+                    </div>`;
+      }
+
+      function createStoryRow(title, stories) {
+        if (stories.length === 0) return '';
+        const isContinueRow = title === 'Continue Your Stories';
+
+        return `
+                    <div class="story-row">
+                        <h3 class="category-title">${title}</h3>
+                        <div class="horizontal-scroll-grid"> 
+                            ${stories.map(story => createStoryCard(story, isContinueRow)).join('')}
+                        </div>
+                    </div>`;
+      }
+
+      function renderSlider() {
+        const continuing = storyData.find(s => s.progress > 0 && s.progress < 100);
+        const suggested = storyData.find(s => s.suggested);
+        const featured = storyData.find(s => s.featured && s.id !== (continuing && continuing.id) && s.id !== (suggested && suggested.id));
+
+        const sliderStories = [continuing, suggested, featured].filter(Boolean);
+
+        if (sliderStories.length === 0) {
+          document.querySelector('.header').style.display = 'none';
+          return;
+        }
+
+        slider.innerHTML = sliderStories.map(story => `
+                    <div class="slide" data-id="${story.id}">
+                        <img class="slide-image" src="${story.imageUrl}" alt="${story.title}" onerror="this.onerror=null; this.src='https://placehold.co/400x600/141414/e5e5e5?text=Image+Unavailable';">
+                        <div class="slide-content">
+                            <div class="slide-content-inner">
+                              <h2 class="slide-title">${story.character}'s ${story.title}</h2>
+                              <p class="slide-description">${story.category}</p>
+                              <button class="slide-button" data-id="${story.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                                <span>View Story</span>
+                              </button>
+                            </div>
+                        </div>
+                    </div>`).join('');
+
+        renderSliderDots(sliderStories.length);
+        updateSlider(0);
+        startSliderInterval();
+      }
+
+      function renderSliderDots(count) {
+        sliderDotsContainer.innerHTML = Array(count).fill(0).map((_, i) => `<div class="slider-dot" data-index="${i}"></div>`).join('');
+      }
+
+      function updateSlider(index) {
+        if (slider.children.length === 0) return;
+        currentSlideIndex = index;
+        slider.style.transform = `translateX(-${index * 100}%)`;
+        document.querySelectorAll('.slider-dot').forEach((dot, i) => {
+          dot.classList.toggle('active', i === index);
+        });
+      }
+
+      function startSliderInterval() {
+        clearInterval(sliderInterval);
+        sliderInterval = setInterval(() => {
+          if (slider.children.length > 1) {
+            const nextIndex = (currentSlideIndex + 1) % slider.children.length;
+            updateSlider(nextIndex);
+          }
+        }, 5000);
+      }
+
+      function applyFilters() {
+        const keyword = document.getElementById('search-input').value.toLowerCase();
+        const level = document.getElementById('level-filter').value;
+        const topic = document.getElementById('topic-filter').value;
+
+        currentFilteredStories = storyData.filter(story => {
+          const matchesKeyword = (story.title.toLowerCase() + story.character.toLowerCase()).includes(keyword) || story.tags.join(' ').includes(keyword);
+          const matchesLevel = !level || story.level.includes(level);
+          const matchesTopic = !topic || story.tags.includes(topic);
+          return matchesKeyword && matchesLevel && matchesTopic;
+        });
+        allStoriesCurrentPage = 1;
+        renderAllStoriesPage();
+      }
+
+      function renderAllStoriesPage() {
+        const grid = document.getElementById('all-stories-grid');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+
+        const start = (allStoriesCurrentPage - 1) * storiesPerPage;
+        const end = start + storiesPerPage;
+        const storiesToRender = currentFilteredStories.slice(start, end);
+
+        if (allStoriesCurrentPage === 1) {
+          grid.innerHTML = '';
+        }
+
+        if (storiesToRender.length === 0 && allStoriesCurrentPage === 1) {
+          grid.innerHTML = `<p style="padding: 0 15px;">No stories match your criteria.</p>`;
+        } else {
+          grid.innerHTML += storiesToRender.map(story => createStoryCard(story)).join('');
+        }
+
+        if (end >= currentFilteredStories.length) {
+          loadMoreBtn.classList.add('hidden');
+        } else {
+          loadMoreBtn.classList.remove('hidden');
+        }
+      }
+
+      function renderContent() {
+        const continuing = storyData.filter(s => s.progress > 0);
+        const featured = storyData.filter(s => s.featured);
+        const suggested = storyData.filter(s => s.suggested);
+        const uniqueLevels = [...new Set(storyData.map(s => s.level))].sort((a, b) => levelMap[a] - levelMap[b]);
+
+        mainContent.innerHTML = `
+                    ${createStoryRow('Continue Your Stories', continuing)}
+                    ${createStoryRow('Recommended For You', suggested)}
+                    ${createStoryRow('Featured Stories', featured)}
+                    <div class="story-row">
+                        <h3 class="category-title">All Stories</h3>
+                        <div class="filters">
+                             <input type="search" id="search-input" placeholder="Search by keyword...">
+                             <select id="level-filter">
+                                <option value="">All Levels</option>
+                                ${uniqueLevels.map(level => `<option>${level}</option>`).join('')}
+                             </select>
+                             <select id="topic-filter">
+                                <option value="">All Topics</option>
+                                ${[...new Set(storyData.flatMap(s => s.tags))].map(tag => `<option value="${tag}">${tag.charAt(0).toUpperCase() + tag.slice(1)}</option>`).join('')}
+                             </select>
+                        </div>
+                        <div id="all-stories-grid"></div>
+                        <div class="load-more-container">
+                            <button id="load-more-btn" class="load-more-btn">Load More</button>
+                        </div>
+                    </div>
+                `;
+        applyFilters();
+        setupFilterListeners();
+      }
+
+      function setupFilterListeners() {
+        document.getElementById('search-input').addEventListener('input', applyFilters);
+        document.getElementById('level-filter').addEventListener('change', applyFilters);
+        document.getElementById('topic-filter').addEventListener('change', applyFilters);
+        document.getElementById('load-more-btn').addEventListener('click', () => {
+          allStoriesCurrentPage++;
+          renderAllStoriesPage();
+        });
+      }
+
+      // --- Initialization ---
+      renderSlider();
+      renderContent();
+
+      closePanelBtn.addEventListener('click', () => panel.classList.remove('active'));
+      document.body.addEventListener('click', e => {
+        const card = e.target.closest('.story-card');
+        if (card) {
+          openPanel(getStoryById(parseInt(card.dataset.id)));
+        }
+        const slideButton = e.target.closest('.slide-button');
+        if (slideButton) {
+          openPanel(getStoryById(parseInt(slideButton.dataset.id)));
+        }
+      });
+
+      nextSlideBtn.addEventListener('click', () => {
+        if (slider.children.length > 1) {
+          const nextIndex = (currentSlideIndex + 1) % slider.children.length;
+          updateSlider(nextIndex);
+          startSliderInterval();
+        }
+      });
+
+      prevSlideBtn.addEventListener('click', () => {
+        if (slider.children.length > 1) {
+          const prevIndex = (currentSlideIndex - 1 + slider.children.length) % slider.children.length;
+          updateSlider(prevIndex);
+          startSliderInterval();
+        }
+      });
+
+      sliderDotsContainer.addEventListener('click', e => {
+        if (e.target.matches('.slider-dot')) {
+          updateSlider(parseInt(e.target.dataset.index));
+          startSliderInterval();
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
