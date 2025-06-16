@@ -59,7 +59,6 @@
       height: 50vh;
       position: relative;
       overflow: hidden;
-      margin-bottom: 30px;
     }
 
     .slider-container {
@@ -221,6 +220,15 @@
       border-top-right-radius: var(--radius-md);
     }
 
+    /* --- Main Content --- */
+    #main-content {
+      transform: translateY(-20px);
+      background: var(--color-white);
+      padding-top: 20px;
+      border-top-left-radius: var(--radius-md);
+      border-top-right-radius: var(--radius-md);
+    }
+
     /* --- Story Rows & Cards --- */
     .story-row {
       margin-bottom: 40px;
@@ -250,7 +258,7 @@
     }
 
     .horizontal-scroll-grid-md {
-      grid-auto-columns: 460px;
+      grid-auto-columns: 70vw;
     }
 
     .story-card {
@@ -516,16 +524,23 @@
       width: 100%;
       border-top-left-radius: var(--radius-md);
       border-top-right-radius: var(--radius-md);
-      border-top: 1px solid #ffffff50;
+      border-top: 1px solid var(--color-white);
       backdrop-filter: blur(2px);
     }
 
     .panel-content-inner {
       padding: 0 20px;
+      height: 60vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: start;
       align-items: center;
+      transform: translateY(-15%);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.8) 8%, rgba(255, 255, 255, 1) 15%, rgba(255, 255, 255, 1) 100%);
+      border-top-left-radius: var(--radius-md);
+      border-top-right-radius: var(--radius-md);
+      backdrop-filter: blur(2px);
+      border-top: 1px solid var(--color-white);
     }
 
     .panel-title {
@@ -590,14 +605,14 @@
 
     /* --- Bottom Navigation --- */
     .bottom-nav-container {
-      width: calc(100% - 40px);
+      width: calc(100% - 30px);
       height: 70px;
       position: fixed;
       bottom: 0;
-      padding: 30px 20px 10px;
+      padding: 50px 15px 10px;
       z-index: 500;
-      background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 37%, rgba(255, 255, 255, 0) 100%);
-      /*backdrop-filter: saturate(180%) blur(1px);*/
+      background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
+      backdrop-filter: saturate(180%) blur(1px);
     }
 
     .bottom-nav {
@@ -654,6 +669,7 @@
       position: relative;
       overflow: hidden;
       gap: var(--spacing-md);
+      height: 35vh;
     }
 
     .episode-item:hover {
@@ -667,19 +683,20 @@
     }
 
     .episode-thumbnail {
-      width: 70%;
-      height: 190px;
+      width: 100%;
+      height: 70%;
       object-fit: cover;
       flex-shrink: 0;
-      transform: translateX(-10%);
+      position: absolute;
+      top: 0;
     }
 
     .episode-thumbnail-overlay {
       position: absolute;
       top: 0;
       left: 0;
-      width: 70%;
-      height: 100%;
+      width: 100%;
+      height: 70%;
       background: radial-gradient(circle, rgba(51, 36, 33, 0) 1%, rgba(51, 36, 33, 0.3) 63%, rgba(51, 36, 33, 0.8) 95%, rgba(51, 36, 33, 0.9) 100%);
       z-index: 2;
     }
@@ -688,18 +705,20 @@
       display: flex;
       flex-grow: 1;
       align-items: center;
+      justify-content: space-between;
       gap: var(--spacing-md);
       flex-direction: column;
       position: absolute;
-      right: 0;
-      background: linear-gradient(90deg, rgba(51, 36, 33, 0.6) 0%, rgba(51, 36, 33, 0.75) 23%, rgba(51, 36, 33, 0.9) 40%, rgba(51, 36, 33, 0.9) 100%);
-      height: calc(100% - 40px);
-      padding: 20px;
-      width: 50%;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(51, 36, 33, 0.4) 0%, rgba(51, 36, 33, 0.8) 33%, rgba(51, 36, 33, 1) 66%, rgba(51, 36, 33, 1) 100%);
+      height: 40%;
+      padding: 20px 0;
+      width: 100%;
       border-top-left-radius: var(--radius-md);
-      border-bottom-left-radius: var(--radius-md);
-      backdrop-filter: blur(10px);
+      border-top-right-radius: var(--radius-md);
+      backdrop-filter: blur(0.2rem);
       z-index: 3;
+      border-top: 1px solid var(--color-white);
     }
 
     .episode-number {
@@ -715,10 +734,12 @@
     }
 
     .episode-title {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: bold;
       color: var(--color-primary);
       margin-bottom: var(--spacing-xs);
+      padding: 0 var(--spacing-sm);
+      text-shadow: 1px 1px var(--color-text);
     }
 
     .episode-description {
@@ -734,18 +755,19 @@
       display: flex;
       align-items: center;
       gap: var(--spacing-md);
-      margin-left: auto;
+      width: 90%;
+      justify-content: space-between;
     }
 
     .episode-duration {
-      color: var(--color-text-muted);
+      color: var(--color-white);
       font-size: 0.9rem;
       white-space: nowrap;
     }
 
     .episode-status {
       color: var(--color-text-muted);
-      font-size: 1.2rem;
+      font-size: 0.9rem;
     }
 
     .episode-status.watched {
@@ -777,7 +799,6 @@
       </div>
       <div class="slider-dots"></div>
     </div>
-    <div class="header-separator"></div>
   </div>
 
   <div id="main-content">
@@ -792,11 +813,9 @@
       <div class="panel-image-container">
         <div class="panel-image-overlay"></div>
         <img class="panel-image" id="panel-image" src="" alt="Story Image">
-        <div class="panel-content-separator">
-          <h2 class="panel-title" id="panel-title"></h2>
-        </div>
       </div>
       <div class="panel-content-inner">
+        <h2 class="panel-title" id="panel-title"></h2>
         <p class="panel-description" id="panel-description"></p>
         <div class="panel-meta">
           <span id="panel-seasons"></span>
@@ -818,10 +837,11 @@
         <span>Stories</span>
       </a>
       <a href="#" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path d="M20.57 14.85c.48-.48.73-1.12.73-1.85s-.25-1.37-.73-1.85l-1.85-1.85c-.48-.48-1.12-.73-1.85-.73s-1.37.25-1.85.73l-4.15 4.15-1.42-1.41L13.59 8c.9-.9.9-2.36 0-3.26l-1.06-1.06c-.45-.45-1.04-.67-1.66-.67s-1.21.22-1.66.67L8.15 4.74 4.74 8.15c-.9.9-.9 2.36 0 3.26l1.06 1.06c.45.45 1.04.67 1.66.67s1.21-.22 1.66-.67l1.06-1.06 4.15-4.15 1.41 1.41-4.15 4.15c-.9.9-.9 2.36 0 3.26l1.06 1.06c.45.45 1.04.67 1.66.67s1.21-.22 1.66-.67l1.06-1.06 2.83-2.83zM6.59 11.17l-1.06-1.06c-.09-.09-.09-.24 0-.33l1.06-1.06c.09-.09.24-.09.33 0l1.06 1.06c.09.09.09.24 0 .33l-1.06 1.06c-.09.09-.24.09-.33 0zm5.17-5.17l1.06-1.06c.09-.09.24-.09.33 0l1.06 1.06c.09.09.09.24 0 .33l-1.06 1.06c-.09.09-.24-.09-.33 0l-1.06-1.06c-.09-.09-.09-.24 0-.33zm5.17 5.17l-1.06-1.06c-.09-.09-.09-.24 0-.33l1.06-1.06c.09-.09.24-.09.33 0l1.06 1.06c.09.09.09.24 0 .33l-1.06 1.06c-.09.09-.24.09-.33 0z" />
         </svg>
-        <span>Map</span>
+        <span>Practice</span>
       </a>
       <a href="#" class="nav-item">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -1217,23 +1237,36 @@
         // Render episodes in the panel
         const episodeList = panel.querySelector('.panel-episode-list');
         episodeList.innerHTML = episodes.map(episode => `
-          <div class="episode-item ${episode.watched ? 'watched' : ''}" data-id="${episode.id}">
+          <div class="episode-item ${episode.watched ? 'watched' : ''}" data-id="${episode.id}" data-story-id="${story.id}">
             <div class="episode-thumbnail-overlay"></div>
             <img class="episode-thumbnail" src="${episode.thumbnailUrl}" alt="${episode.title}" loading="lazy">
             <div class="episode-content">
               <div class="episode-info">
                 <div class="episode-title">${episode.title}</div>
-                <div class="episode-description">${episode.description}</div>
               </div>
               <div class="episode-meta">
                 <div class="episode-duration">${episode.duration}</div>
                 <div class="episode-status ${episode.watched ? 'watched' : ''}">
-                  ${episode.watched ? '✓' : ''}
+                  ${episode.watched ? 'Completed ✓' : ''}
                 </div>
               </div>
             </div>
           </div>
         `).join('');
+
+        // Add click event listeners to episode items
+        const episodeItems = episodeList.querySelectorAll('.episode-item');
+        episodeItems.forEach(item => {
+          item.addEventListener('click', () => {
+            const storyId = item.dataset.storyId;
+            const episodeId = item.dataset.id;
+            // Store the selected episode info in localStorage
+            localStorage.setItem('selectedStoryId', storyId);
+            localStorage.setItem('selectedEpisodeId', episodeId);
+            // Navigate to episodes page
+            window.location.href = 'episode.html';
+          });
+        });
 
         const startBtn = panel.querySelector('#panel-start-btn');
         const locked = isStoryLocked(story.level);

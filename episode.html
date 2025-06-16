@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Episode 1 - Hanoi Study Year (Enhanced)</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
+  <style>
+    :root {
+      /* Colors */
+      --color-primary: #a8d5a8;
+      --color-primary-dark: #9bc89b;
+      --color-text: #332421;
+      --color-text-light: #3c2e26;
+      --color-text-muted: #33242150;
+      --color-background: #ededed;
+      --color-border-light: #00000010;
+      --color-border-dark: #00000050;
+      --color-white: #fff;
+      --color-shadow: rgba(0, 0, 0, 0.5);
+      --color-shadow-light: rgba(0, 0, 0, 0.15);
+      --color-shadow-green: rgba(168, 213, 168, 0.4);
+      --color-shadow-green-hover: rgba(168, 213, 168, 0.6);
+      --color-disabled: #ccc;
+      --color-red: #ff0000;
+      --color-speaker-1: #0000ff;
+      --color-speaker-2: #00ff00;
+      --color-speaker-3: #ff00ff;
+      --color-success: #28a745;
+      --color-error: #dc3545;
+
+      /* Spacing */
+      --spacing-xs: 10px;
+      --spacing-sm: 15px;
+      --spacing-md: 20px;
+      --spacing-lg: 30px;
+      --spacing-xl: 40px;
+
+      /* Border Radius */
+      --radius-sm: 10px;
+      --radius-md: 20px;
+      --radius-lg: 50px;
+
+      /* Shadows */
+      --shadow-sm: 0 2px 4px rgba(51, 36, 33, 0.05);
+      --shadow-md: 0 5px 15px var(--color-shadow-green);
+      --shadow-lg: 0 8px 25px var(--color-shadow-light);
+      --shadow-xl: 0 10px 25px var(--color-shadow);
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #e9ebee;
+      overflow: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      /* Aspect ratio 16:9 */
+      padding-top: 56.25%;
+      background-color: #000;
+      margin-top: 50px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2;
+      transition: background-color 0.3s ease;
+    }
+
+    .video-overlay:hover {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    .video-play-pause-btn {
+      font-size: 6rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      transition: transform 0.2s ease, opacity 1s ease;
+      opacity: 1;
+    }
+
+    .video-play-pause-btn.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .video-play-pause-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .lesson-container {
+      margin-top: 20px;
+      width: 100%;
+      flex-grow: 1;
+      overflow: hidden;
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      /* Initially hidden */
+      display: none;
+    }
+
+    .lesson-title {
+      margin-top: 0;
+      border-bottom: 1px solid #eee;
+      padding: 0 15px 15px;
+    }
+
+    .lesson-content {
+      height: calc(100% - 60px);
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .transcript-container {
+      margin-bottom: 30px;
+    }
+
+    .transcript-item {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+      transition: opacity 0.4s ease;
+    }
+
+    .transcript-item.active .bubble-content {
+      background: var(--color-primary);
+    }
+
+    .bubble {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .bubble-content {
+      max-width: 85%;
+      padding: 10px 15px;
+      background: #f1f0f0;
+      border-radius: 18px;
+    }
+
+    .bubble-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 5px;
+    }
+
+    .speaker {
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+      color: var(--color-speaker-1);
+    }
+
+    .text {
+      line-height: 1.5;
+    }
+
+    .action-icon {
+      font-size: 1.2rem;
+      color: #999;
+      cursor: pointer;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .explain-icon:hover {
+      color: var(--color-primary-dark);
+    }
+
+    .replay-icon:hover {
+      color: var(--color-red);
+    }
+
+    /* Tooltip styles */
+    .tooltip-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip-trigger {
+      text-decoration: underline;
+      text-decoration-style: dashed;
+      color: var(--color-red);
+      cursor: pointer;
+    }
+
+    .tooltip-content {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      z-index: 10;
+      width: max-content;
+      max-width: 250px;
+      font-size: 0.9em;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .tooltip-content::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #333 transparent transparent transparent;
+    }
+
+    .tooltip-wrapper:hover .tooltip-content {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Explain tooltip styles */
+    .explain-tooltip {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 12px 15px;
+      border-radius: var(--radius-sm);
+      z-index: 20;
+      width: 300px;
+      font-size: 0.9em;
+      line-height: 1.4;
+      transition: opacity 0.3s, visibility 0.3s;
+      margin-right: 10px;
+    }
+
+    .explain-tooltip::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      margin-top: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent transparent #333;
+    }
+
+    .explain-icon:hover+.explain-tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Video completion section */
+    .video-completion {
+      text-align: center;
+      padding: 30px 20px;
+      background: #f8f9fa;
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .video-completion h3 {
+      color: var(--color-text);
+      margin-bottom: 15px;
+    }
+
+    .video-completion p {
+      color: var(--color-text-light);
+      margin-bottom: 20px;
+    }
+
+    /* Quiz styles */
+    .quiz-container {
+      display: none;
+    }
+
+    .quiz-item {
+      background: #f8f9fa;
+      border-radius: var(--radius-md);
+      padding: 25px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .quiz-item.active {
+      display: block;
+    }
+
+    .quiz-question {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: var(--color-text);
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-option {
+      padding: 12px 15px;
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--color-primary);
+      background: #f0f8f0;
+    }
+
+    .quiz-option.selected {
+      border-color: var(--color-primary);
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .quiz-option.correct {
+      border-color: var(--color-success);
+      background: var(--color-success);
+      color: white;
+    }
+
+    .quiz-option.incorrect {
+      border-color: var(--color-error);
+      background: var(--color-error);
+      color: white;
+    }
+
+    .quiz-result {
+      padding: 15px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .quiz-result.correct {
+      background: #d4edda;
+      border: 1px solid var(--color-success);
+      color: #155724;
+    }
+
+    .quiz-result.incorrect {
+      background: #f8d7da;
+      border: 1px solid var(--color-error);
+      color: #721c24;
+    }
+
+    .quiz-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-text);
+    }
+
+    .btn-primary:hover {
+      background: var(--color-primary-dark);
+    }
+
+    .btn-primary:disabled {
+      background: var(--color-disabled);
+      cursor: not-allowed;
+    }
+
+    .btn-success {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #218838;
+    }
+
+    /* Quiz summary */
+    .quiz-summary {
+      background: #f8f9fa;
+      border-radius: var(--radius-md);
+      padding: 25px;
+      text-align: center;
+      display: none;
+    }
+
+    .quiz-summary h3 {
+      color: var(--color-text);
+      margin-bottom: 15px;
+    }
+
+    .quiz-score {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .quiz-score.good {
+      color: var(--color-success);
+    }
+
+    .quiz-score.average {
+      color: #ffc107;
+    }
+
+    .quiz-score.poor {
+      color: var(--color-error);
+    }
+
+    .back-button {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      padding: 8px 15px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      z-index: 1000;
+      transition: background-color 0.2s;
+    }
+
+    .back-button:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+  </style>
+</head>
+
+<body>
+  <a href="stories.html" class="back-button">← Quay lại</a>
+
+  <div class="container">
+    <div class="video-wrapper">
+      <iframe id="youtube-player" src="https://www.youtube.com/embed/aiH5gYtJN6E?enablejsapi=1&controls=0&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+      </iframe>
+      <div class="video-overlay" id="video-overlay">
+        <div class="video-play-pause-btn"><span class="mdi mdi-play-circle-outline"></span></div>
+      </div>
+    </div>
+    <div class="lesson-container" id="lesson-container">
+      <h2 class="lesson-title">Course introduction</h2>
+      <div class="lesson-content">
+        <div class="transcript-container" id="transcript-content">
+        </div>
+
+        <div class="video-completion" id="video-completion">
+          <h3>🎉 Congratulations!</h3>
+          <p>You have finished watching the lesson video. Are you ready for the quizzes? There are total 3 quizzes.</p>
+          <button class="btn btn-primary" id="start-quiz-btn">Start Quiz</button>
+        </div>
+
+        <div class="quiz-container" id="quiz-container">
+          <!-- Quizzes will be generated here -->
+        </div>
+
+        <div class="quiz-summary" id="quiz-summary">
+          <h3>Quiz Completed!</h3>
+          <div class="quiz-score" id="final-score"></div>
+          <p id="score-message"></p>
+          <button class="btn btn-success" id="finish-lesson-btn">Finish Lesson</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    // --- DATA ---
+    const transcriptData = [{
+      time: "00:00",
+      speaker: "Speaker A",
+      text: "Before this course, I couldn't even say 'xin chào' properly…",
+      tooltips: [{
+        word: "'xin chào'",
+        tooltip: "Hello"
+      }],
+      explanation: "The speaker is expressing their initial difficulty with Vietnamese pronunciation, particularly with the common greeting 'xin chào'. This sets up the narrative of their language learning journey."
+    }, {
+      time: "00:03",
+      speaker: "Speaker A",
+      text: "But now, I can ask for directions,",
+      tooltips: [],
+      explanation: "This shows progress in practical language skills - being able to ask for directions is a fundamental ability for travelers and language learners."
+    }, {
+      time: "00:05",
+      speaker: "Speaker A",
+      text: "order phở like a local, and even say 'Cảm ơn rất nhiều'.",
+      tooltips: [{
+        word: "'Cảm ơn rát nhiều'",
+        tooltip: "Thank you very much"
+      }],
+      explanation: "The speaker demonstrates advanced progress by mentioning they can order phở (a complex Vietnamese dish) like a local and use formal expressions of gratitude, showing cultural integration beyond basic language skills."
+    }];
+
+    const quizData = [{
+        question: "What does 'xin chào' mean in English?",
+        options: ["Goodbye", "Hello", "Thank you", "Please"],
+        correct: 1,
+        explanation: "'Xin chào' is the most common Vietnamese greeting, equivalent to 'Hello' in English."
+      },
+      {
+        question: "What Vietnamese phrase means 'Thank you very much'?",
+        options: ["Xin chào", "Cảm ơn rất nhiều", "Xin lỗi", "Tạm biệt"],
+        correct: 1,
+        explanation: "'Cảm ơn rất nhiều' is a formal way to express gratitude, meaning 'Thank you very much'."
+      },
+      {
+        question: "What food item is mentioned in the transcript?",
+        options: ["Bánh mì", "Phở", "Bún bò", "Gỏi cuốn"],
+        correct: 1,
+        explanation: "Phở is mentioned as something the speaker can now order 'like a local', showing their progress in Vietnamese language and culture."
+      }
+    ];
+
+    // --- DOM ELEMENTS ---
+    const videoOverlay = document.getElementById('video-overlay');
+    const playPauseBtnIcon = document.querySelector('.video-play-pause-btn .mdi');
+    const playPauseBtn = document.querySelector('.video-play-pause-btn');
+    const lessonContainer = document.getElementById('lesson-container');
+    const transcriptContent = document.getElementById('transcript-content');
+    const videoCompletion = document.getElementById('video-completion');
+    const startQuizBtn = document.getElementById('start-quiz-btn');
+    const quizContainer = document.getElementById('quiz-container');
+    const quizSummary = document.getElementById('quiz-summary');
+    const finalScore = document.getElementById('final-score');
+    const scoreMessage = document.getElementById('score-message');
+    const finishLessonBtn = document.getElementById('finish-lesson-btn');
+
+    let player;
+    let transcriptInterval;
+    let transcriptHasBeenShown = false;
+    let lastActiveItem = null;
+    let videoCompleted = false;
+    let currentQuizIndex = 0;
+    let quizAnswers = [];
+    let quizScore = 0;
+
+    // --- HELPER FUNCTIONS ---
+
+    /**
+     * Converts "MM:SS" time format to seconds.
+     * @param {string} timeStr - The time string e.g., "01:23"
+     * @returns {number} - The total time in seconds e.g., 83
+     */
+    function timeToSeconds(timeStr) {
+      const [minutes, seconds] = timeStr.split(':').map(Number);
+      return (minutes * 60) + seconds;
+    }
+
+    /**
+     * Creates HTML for a text segment, adding tooltips where necessary.
+     * @param {string} text - The full text of the transcript line.
+     * @param {Array} tooltips - The array of tooltip objects for this line.
+     * @returns {string} - The HTML string with spans for tooltips.
+     */
+    function createTooltipText(text, tooltips) {
+      if (!tooltips || tooltips.length === 0) {
+        return text;
+      }
+
+      let result = text;
+      tooltips.forEach(({
+        word,
+        tooltip
+      }) => {
+        const tooltipHTML = `
+          <span class="tooltip-wrapper">
+            <span class="tooltip-trigger">${word}</span>
+            <span class="tooltip-content">${tooltip}</span>
+          </span>
+        `;
+        result = result.replaceAll(word, tooltipHTML);
+      });
+      return result;
+    }
+
+    // --- CORE LOGIC ---
+
+    /**
+     * This function creates the YouTube player after the API code downloads.
+     */
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('youtube-player', {
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    /**
+     * The API will call this function when the video player is ready.
+     */
+    function onPlayerReady(event) {
+      generateTranscript();
+      generateQuizzes();
+    }
+
+    /**
+     * The API calls this function when the player's state changes.
+     */
+    function onPlayerStateChange(event) {
+      if (event.data == YT.PlayerState.PLAYING) {
+        videoOverlay.style.backgroundColor = 'transparent';
+        playPauseBtnIcon.className = 'mdi mdi-pause-circle-outline';
+        playPauseBtn.classList.add('hidden');
+
+        if (!transcriptHasBeenShown) {
+          lessonContainer.style.display = 'block';
+          transcriptHasBeenShown = true;
+        }
+
+        startTranscriptTracking();
+      } else if (event.data == YT.PlayerState.ENDED) {
+        // Video completed
+        if (!videoCompleted) {
+          videoCompleted = true;
+          videoCompletion.style.display = 'block';
+          videoCompletion.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+        stopTranscriptTracking();
+      } else {
+        videoOverlay.style.backgroundColor = 'rgba(0,0,0,0.3)';
+        playPauseBtnIcon.className = 'mdi mdi-play-circle-outline';
+        playPauseBtn.classList.remove('hidden');
+        stopTranscriptTracking();
+      }
+    }
+
+    /**
+     * Toggles play/pause state of the video.
+     */
+    function togglePlayPause() {
+      const playerState = player.getPlayerState();
+      if (playerState === YT.PlayerState.PLAYING) {
+        player.pauseVideo();
+      } else {
+        player.playVideo();
+      }
+    }
+
+    /**
+     * Generates the entire transcript view from the data.
+     */
+    function generateTranscript() {
+      transcriptContent.innerHTML = '';
+      transcriptData.forEach((item, index) => {
+        const timeInSeconds = timeToSeconds(item.time);
+
+        const transcriptItem = document.createElement('div');
+        transcriptItem.className = 'transcript-item';
+        transcriptItem.dataset.time = timeInSeconds;
+
+        const textWithTooltips = createTooltipText(item.text, item.tooltips);
+
+        transcriptItem.innerHTML = `
+          <div class="bubble">
+            <div class="bubble-content">
+              <div class="speaker">${item.speaker}</div>
+              <div class="text">${textWithTooltips}</div>
+            </div>
+            <div class="bubble-actions">
+              <span class="mdi mdi-help-circle action-icon explain-icon" data-index="${index}"></span>
+              <span class="mdi mdi-replay action-icon replay-icon"></span>
+              <div class="explain-tooltip">${item.explanation}</div>
+            </div>
+          </div>
+        `;
+
+        transcriptContent.appendChild(transcriptItem);
+      });
+    }
+
+    /**
+     * Generates all quiz items.
+     */
+    function generateQuizzes() {
+      quizContainer.innerHTML = '';
+      quizData.forEach((quiz, index) => {
+        const quizItem = document.createElement('div');
+        quizItem.className = 'quiz-item';
+        quizItem.dataset.index = index;
+
+        const optionsHTML = quiz.options.map((option, optionIndex) =>
+          `<div class="quiz-option" data-option="${optionIndex}">${option}</div>`
+        ).join('');
+
+        quizItem.innerHTML = `
+          <div class="quiz-question">Question ${index + 1}: ${quiz.question}</div>
+          <div class="quiz-options">${optionsHTML}</div>
+          <div class="quiz-result">
+            <div class="result-text"></div>
+            <div class="result-explanation"></div>
+          </div>
+          <div class="quiz-actions">
+            <button class="btn btn-primary submit-answer" disabled>Submit Answer</button>
+            <button class="btn btn-primary next-quiz" style="display: none;">Next Question</button>
+          </div>
+        `;
+
+        quizContainer.appendChild(quizItem);
+      });
+    }
+
+    /**
+     * Starts checking the video's current time to highlight the transcript.
+     */
+    function startTranscriptTracking() {
+      if (transcriptInterval) return;
+      transcriptInterval = setInterval(() => {
+        const currentTime = player.getCurrentTime();
+        updateTranscriptHighlight(currentTime);
+      }, 500);
+    }
+
+    /**
+     * Stops the transcript tracking interval.
+     */
+    function stopTranscriptTracking() {
+      clearInterval(transcriptInterval);
+      transcriptInterval = null;
+    }
+
+    /**
+     * Finds and highlights the current transcript item.
+     */
+    function updateTranscriptHighlight(currentTime) {
+      let currentItem = null;
+      const transcriptItems = document.querySelectorAll('.transcript-item');
+
+      for (let i = transcriptItems.length - 1; i >= 0; i--) {
+        const item = transcriptItems[i];
+        if (currentTime >= parseFloat(item.dataset.time)) {
+          currentItem = item;
+          break;
+        }
+      }
+
+      if (currentItem && currentItem !== lastActiveItem) {
+        if (lastActiveItem) {
+          lastActiveItem.classList.remove('active');
+        }
+        currentItem.classList.add('active');
+        lastActiveItem = currentItem;
+
+        currentItem.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }
+
+    /**
+     * Starts the quiz section.
+     */
+    function startQuiz() {
+      quizContainer.style.display = 'block';
+      currentQuizIndex = 0;
+      quizAnswers = [];
+      quizScore = 0;
+      showQuiz(currentQuizIndex);
+    }
+
+    /**
+     * Shows a specific quiz.
+     */
+    function showQuiz(index) {
+      const quizItems = document.querySelectorAll('.quiz-item');
+      quizItems.forEach(item => item.classList.remove('active'));
+
+      if (index < quizItems.length) {
+        quizItems[index].classList.add('active');
+        quizItems[index].scrollIntoView({
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    /**
+     * Handles quiz option selection.
+     */
+    function selectQuizOption(quizIndex, optionIndex) {
+      const quizItem = document.querySelector(`.quiz-item[data-index="${quizIndex}"]`);
+      const options = quizItem.querySelectorAll('.quiz-option');
+      const submitBtn = quizItem.querySelector('.submit-answer');
+
+      // Clear previous selections
+      options.forEach(option => option.classList.remove('selected'));
+
+      // Select current option
+      options[optionIndex].classList.add('selected');
+
+      // Enable submit button
+      submitBtn.disabled = false;
+
+      // Store the selected answer
+      quizAnswers[quizIndex] = optionIndex;
+    }
+
+    /**
+     * Submits the current quiz answer.
+     */
+    function submitQuizAnswer(quizIndex) {
+      const quiz = quizData[quizIndex];
+      const selectedAnswer = quizAnswers[quizIndex];
+      const isCorrect = selectedAnswer === quiz.correct;
+
+      if (isCorrect) {
+        quizScore++;
+      }
+
+      const quizItem = document.querySelector(`.quiz-item[data-index="${quizIndex}"]`);
+      const options = quizItem.querySelectorAll('.quiz-option');
+      const result = quizItem.querySelector('.quiz-result');
+      const resultText = result.querySelector('.result-text');
+      const resultExplanation = result.querySelector('.result-explanation');
+      const submitBtn = quizItem.querySelector('.submit-answer');
+      const nextBtn = quizItem.querySelector('.next-quiz');
+
+      // Disable all options
+      options.forEach((option, index) => {
+        option.style.pointerEvents = 'none';
+        if (index === quiz.correct) {
+          option.classList.add('correct');
+        } else if (index === selectedAnswer && !isCorrect) {
+          option.classList.add('incorrect');
+        }
+      });
+
+      // Show result
+      result.style.display = 'block';
+      result.className = `quiz-result ${isCorrect ? 'correct' : 'incorrect'}`;
+      resultText.textContent = isCorrect ? '✅ Correct!' : '❌ Incorrect!';
+      resultExplanation.textContent = quiz.explanation;
+
+      // Hide submit button, show next button
+      submitBtn.style.display = 'none';
+
+      if (currentQuizIndex < quizData.length - 1) {
+        nextBtn.style.display = 'inline-block';
+        nextBtn.textContent = 'Next Question';
+      } else {
+        nextBtn.style.display = 'inline-block';
+        nextBtn.textContent = 'View Results';
+      }
+    }
+
+    /**
+     * Moves to the next quiz or shows results.
+     */
+    function nextQuiz() {
+      currentQuizIndex++;
+
+      if (currentQuizIndex < quizData.length) {
+        showQuiz(currentQuizIndex);
+      } else {
+        showQuizSummary();
+      }
+    }
+
+    /**
+     * Shows the final quiz summary.
+     */
+    function showQuizSummary() {
+      const percentage = Math.round((quizScore / quizData.length) * 100);
+
+      finalScore.textContent = `${quizScore}/${quizData.length} (${percentage}%)`;
+
+      if (percentage >= 80) {
+        finalScore.className = 'quiz-score good';
+        scoreMessage.textContent = 'Excellent work! You have a great understanding of the lesson.';
+      } else if (percentage >= 60) {
+        finalScore.className = 'quiz-score average';
+        scoreMessage.textContent = 'Good job! You might want to review some parts of the lesson.';
+      } else {
+        finalScore.className = 'quiz-score poor';
+        scoreMessage.textContent = 'Keep practicing! Consider reviewing the lesson again to improve your understanding.';
+      }
+
+      quizSummary.style.display = 'block';
+      quizSummary.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+
+    // --- EVENT LISTENERS ---
+
+    // Listen for clicks on the main video overlay to play/pause
+    videoOverlay.addEventListener('click', togglePlayPause);
+
+    // Start quiz button
+    startQuizBtn.addEventListener('click', startQuiz);
+
+    // Finish lesson button
+    finishLessonBtn.addEventListener('click', () => {
+      alert('Lesson completed! Great job!');
+      // Here you could redirect to the next lesson or back to the course overview
+    });
+
+    // Use event delegation for clicks inside the transcript container
+    transcriptContent.addEventListener('click', function(event) {
+      // Check if a replay icon was clicked
+      if (event.target.classList.contains('replay-icon')) {
+        const parentItem = event.target.closest('.transcript-item');
+        if (parentItem && parentItem.dataset.time) {
+          const time = parseFloat(parentItem.dataset.time);
+          player.seekTo(time, true);
+          player.playVideo();
+        }
+      }
+    });
+
+    // Use event delegation for quiz interactions
+    quizContainer.addEventListener('click', function(event) {
+      const quizItem = event.target.closest('.quiz-item');
+      if (!quizItem) return;
+
+      const quizIndex = parseInt(quizItem.dataset.index);
+
+      // Handle option selection
+      if (event.target.classList.contains('quiz-option')) {
+        const optionIndex = parseInt(event.target.dataset.option);
+        selectQuizOption(quizIndex, optionIndex);
+      }
+
+      // Handle submit answer
+      if (event.target.classList.contains('submit-answer')) {
+        submitQuizAnswer(quizIndex);
+      }
+
+      // Handle next quiz
+      if (event.target.classList.contains('next-quiz')) {
+        nextQuiz();
+      }
+    });
+  </script>
+</body>
+
+</html>
